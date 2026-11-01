@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080611">
+<title>MAYA-XMD // Pairing Portal</title>
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #080611;
+  --panel: rgba(17,12,31,.88);
+  --pink: #ff36c7;
+  --purple: #9b5cff;
+  --green: #67ffb0;
+  --muted: #a79ab9;
+  --line: rgba(193,139,255,.2);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 15% 10%,rgba(129,48,188,.2),transparent 35%),
+    radial-gradient(ellipse at 90% 80%,rgba(255,54,199,.12),transparent 32%),
+    var(--bg);
+  font-family: ui-monospace, monospace;
+  color: #f7efff;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow-x: hidden;
+}
+
+body:before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size: 34px 34px;
+}
+
+.shell {
+  width: min(100%,510px);
+  position: relative;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 3px 15px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green);
+  margin-right: 8px;
+}
+
+.panel {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: clamp(22px,6vw,36px);
+  box-shadow: 0 0 55px rgba(155,92,255,.12);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+}
+
+.panel:before {
+  content: "";
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg,transparent,var(--pink),var(--purple),transparent);
+  box-shadow: 0 0 18px var(--pink);
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 27px;
+}
+
+.symbol {
+  width: 62px;
+  height: 62px;
+  margin: 0 auto 16px;
+  border: 1px solid rgba(255,54,199,.55);
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  color: var(--pink);
+  font-size: 26px;
+  text-shadow: 0 0 15px var(--pink);
+  transform: rotate(-4deg);
+}
+
+h1 {
+  font-size: clamp(27px,7vw,36px);
+  letter-spacing: 3px;
+  margin: 0;
+  font-weight: 900;
+}
+
+h1 span {
+  color: var(--pink);
+  text-shadow: 0 0 20px rgba(255,54,199,.45);
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 3px;
+  margin-top: 9px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(5,4,13,.65);
+  border: 1px solid var(--line);
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 11px;
+  margin: 22px 0;
+}
+
+.status strong {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.status .label { color: var(--muted); }
+
+label {
+  display: block;
+  font-size: 11px;
+  color: #d7c5eb;
+  letter-spacing: 1px;
+  margin: 23px 0 10px;
+}
+
+.input-wrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(155,92,255,.38);
+  border-radius: 12px;
+  background: #090713;
+}
+
+.input-wrap:focus-within {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 3px rgba(255,54,199,.1);
+}
+
+.prefix {
+  padding: 0 0 0 15px;
+  color: var(--pink);
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 17px 14px;
+  color: white;
+  font: inherit;
+  font-size: 14px;
+}
+
+input::placeholder { color: #685d77; }
+
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 15px;
+  background: linear-gradient(100deg,#a83cff,#ed35bd);
+  color: white;
+  font: 700 12px ui-monospace,monospace;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+button:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: .55;
+  cursor: wait;
+}
+
+.result {
+  display: none;
+  margin-top: 20px;
+  padding: 17px;
+  border: 1px dashed rgba(103,255,176,.45);
+  border-radius: 13px;
+  background: rgba(103,255,176,.045);
+  text-align: center;
+}
+
+.result.show { display: block; }
+
+.result small {
+  display: block;
+  color: var(--green);
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.code {
+  font-size: clamp(25px,8vw,34px);
+  font-weight: 900;
+  letter-spacing: 5px;
+  color: #fff;
+  margin: 12px 0;
+  word-break: break-word;
+}
+
+.copy {
+  margin-top: 5px;
+  background: rgba(103,255,176,.12);
+  border: 1px solid rgba(103,255,176,.3);
+  color: var(--green);
+  box-shadow: none;
+}
+
+.message {
+  min-height: 20px;
+  margin: 13px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.steps {
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 19px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.9;
+}
+
+.steps b {
+  color: #e8d9f7;
+}
+
+.footer {
+  text-align: center;
+  color: #716580;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  margin: 18px 0 0;
+}
+
+.scan {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg,transparent,var(--purple),transparent);
+  opacity: .5;
+  margin-top: 23px;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--purple);
+  }
+}
+
+@media(max-width:420px) {
+  body { padding: 14px; }
+  .top { font-size: 9px; }
+  .status { font-size: 10px; }
+}
+</style>
+</head>
+
+<body>
+<main class="shell">
+
+<div class="top">
+  <span><i class="dot"></i>SYSTEM ONLINE</span>
+  <span>SECURE NODE // 01</span>
+</div>
+
+<section class="panel">
+
+<header class="brand">
+  <div class="symbol">⌘</div>
+  <h1>MAYA<span>-XMD</span></h1>
+  <div class="sub">WHATSAPP PAIRING PORTAL</div>
+</header>
+
+<div class="status">
+  <span class="label">● CONNECTION STATUS</span>
+  <strong id="status">CHECKING...</strong>
+</div>
+
+<form id="pairForm">
+  <label for="phone">// ENTER WHATSAPP NUMBER</label>
+
+  <div class="input-wrap">
+    <span class="prefix">+</span>
+    <input
+      id="phone"
+      name="phoneNumber"
+      type="tel"
+      inputmode="numeric"
+      autocomplete="tel"
+      placeholder="2547XXXXXXXX"
+      maxlength="16"
+      required
+    >
+  </div>
+
+  <button id="generate" type="submit">
+    GENERATE PAIRING CODE ↗
+  </button>
+</form>
+
+<div class="result" id="result">
+  <small>YOUR LINKING CODE</small>
+  <div class="code" id="code">----</div>
+  <button class="copy" type="button" id="copy">
+    COPY CODE
+  </button>
+</div>
+
+<p class="message" id="message" aria-live="polite">
+  Enter your number with country code to begin.
+</p>
+
+<div class="steps">
+  <b>HOW TO LINK</b><br>
+  01 &nbsp; Open WhatsApp on your phone<br>
+  02 &nbsp; Settings → Linked Devices<br>
+  03 &nbsp; Choose “Link a Device”<br>
+  04 &nbsp; Select “Link with phone number instead”<br>
+  05 &nbsp; Enter the code shown above
+</div>
+
+<div class="scan"></div>
+</section>
+
+<div class="footer">
+  MAYA-XMD // CYBER SESSION INTERFACE
+</div>
+</main>
+
+<script>
+const form = document.getElementById('pairForm');
+const btn = document.getElementById('generate');
+const msg = document.getElementById('message');
+const result = document.getElementById('result');
+const codeEl = document.getElementById('code');
+const statusEl = document.getElementById('status');
+
+async function refreshStatus() {
+  try {
+    const r = await fetch('/api/status', {cache:'no-store'});
+    const s = await r.json();
+
+    statusEl.textContent = s.connected
+      ? 'CONNECTED'
+      : s.waitingForPairing
+        ? 'AWAITING PAIR'
+        : 'STARTING';
+
+    statusEl.style.color = s.connected
+      ? '#67ffb0'
+      : s.waitingForPairing
+        ? '#ffb45c'
+        : '#b99bd8';
+
+  } catch(e) {
+    statusEl.textContent = 'OFFLINE';
+  }
+}
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const phoneNumber = document.getElementById('phone').value.trim();
+
+  btn.disabled = true;
+  btn.textContent = 'REQUESTING CODE...';
+  msg.textContent = 'Contacting WhatsApp securely...';
+  result.classList.remove('show');
+
+  try {
+    const r = await fetch('/api/pair', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({phoneNumber})
+    });
+
+    const data = await r.json();
+
+    if (!r.ok) {
+      throw new Error(data.error || 'Pairing request failed');
+    }
+
+    codeEl.textContent = data.code;
+    result.classList.add('show');
+    msg.textContent = data.message ||
+      'Code generated. Enter it in WhatsApp Linked Devices.';
+
+  } catch(err) {
+    msg.textContent = err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'GENERATE PAIRING CODE ↗';
+    refreshStatus();
+  }
+});
+
+document.getElementById('copy').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(codeEl.textContent);
+    msg.textContent = 'Pairing code copied.';
+  } catch(e) {
+    msg.textContent = 'Select and copy the code manually.';
+  }
+});
+
+refreshStatus();
+setInterval(refreshStatus, 8000);
+</script>
+</body>
+</html>
