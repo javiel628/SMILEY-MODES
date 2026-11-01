@@ -331,8 +331,7 @@ function detectPlatform() {
 async function loadAllPlugins() {
     try {
         const pluginManager = new PluginManager();
-        const pluginsDir = path.join(__dirname, 'Plugins');
-
+        const pluginsDir = path.join(__dirname, 'plugins');
         if (!fs.existsSync(pluginsDir)) {
             fs.mkdirSync(pluginsDir, { recursive: true });
             log('Created plugins directory', 'system');
