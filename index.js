@@ -1569,13 +1569,8 @@ app.post('/api/pair', async (req, res) => {
 });
 
 // ==================== UPTIME ====================
-app.get('/uptime', (req, res) => {
-    res.json({
-        uptime: runtime(process.uptime()),
-        status: 'online',
-        bot: global.botname,
-        connected: global.isBotConnected
-    });
+app.get('/status', (req, res) => {
+    res.sendFile(path.join(__dirname, 'data', 'VesperXmd.html'));
 });
 
 // ==================== START WEBSITE ====================
